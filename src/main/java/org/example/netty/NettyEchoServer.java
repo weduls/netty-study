@@ -8,6 +8,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import io.netty.util.concurrent.EventExecutorGroup;
@@ -26,7 +27,7 @@ public class NettyEchoServer {
                         @Override
                         protected void initChannel(Channel ch) {
                             ch.pipeline().addLast(
-                                    eventExecutorGroup, new LoggingHandler()
+                                    eventExecutorGroup, new LoggingHandler(LogLevel.INFO)
                             );
                             ch.pipeline().addLast(
                                     new StringEncoder(),
