@@ -6,15 +6,17 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import io.netty.util.concurrent.EventExecutorGroup;
 import io.netty.util.concurrent.FutureListener;
 
-public class NettyEchoServer {
+public class NettyHttpServer {
+
+    // client는 curl localhost:8080
     public static void main(String[] args) throws InterruptedException {
         EventLoopGroup parentGroup = new NioEventLoopGroup();
         EventLoopGroup childGroup = new NioEventLoopGroup(4);
@@ -30,9 +32,10 @@ public class NettyEchoServer {
                                     eventExecutorGroup, new LoggingHandler(LogLevel.INFO)
                             );
                             ch.pipeline().addLast(
-                                    new StringEncoder(),
-                                    new StringDecoder(),
-                                    new NettyServerHandler()
+                                    // FullHttpRequest를 사용하기 위한 코덱과 aggregator
+                                    new HttpServerCodec(),
+                                    new HttpObjectAggregator(1024 * 1024),
+                                    new NettyHttpServerHandler()
                             );
                         }
                     });
